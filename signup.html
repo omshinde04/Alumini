@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AlumniConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        /* Reusing hamburger menu styles from index.html */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger-line {
+            width: 30px;
+            height: 3px;
+            background-color: black;
+            margin: 3px 0;
+            transition: 0.4s;
+        }
+
+        .open .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .open .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .open .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(243, 244, 246, 0.9);
+            padding: 1rem 0;
+            z-index: 10;
+        }
+
+        .mobile-nav a {
+            display: block;
+            color: black;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .mobile-nav a:hover {
+            background-color: rgba(229, 231, 235, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: none;
+            }
+
+            .mobile-nav.open {
+                display: block;
+            }
+        }
+
+        /* Style for input fields with icons */
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: gray;
+        }
+
+        .input-field {
+            padding-left: 2.25rem; /* Adjust padding to accommodate the icon */
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .social-login-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .social-login-button i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .google-button {
+            background-color: #DB4437;
+            color: white;
+        }
+
+        .google-button:hover {
+            background-color: #C83225;
+        }
+
+        .facebook-button {
+            background-color: #3B5998;
+            color: white;
+        }
+
+        .facebook-button:hover {
+            background-color: #2A4887;
+        }
+
+        .phone-button {
+            background-color: #128C7E;
+            color: white;
+        }
+
+        .phone-button:hover {
+            background-color: #0C665B;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+<header class="bg-white text-gray-800 py-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+        <a href="/" class="text-xl font-bold text-blue-600">AlumniConnect</a>
+        <div class="hidden md:flex space-x-4 items-center">
+            <a href="/index.html"
+               class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full transition duration-300">Home</a>
+            <a href="/signup.html"
+               class="bg-white text-blue-600 hover:bg-blue-100 font-semibold py-2 px-4 rounded-full transition duration-300">Sign
+                Up</a>
+        </div>
+        <button id="hamburger" class="hamburger focus:outline-none md:hidden">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </button>
+    </div>
+    <div id="mobile-nav" class="mobile-nav">
+        <a href="/index.html">Home</a>
+        <a href="/login.html">Login</a>
+        <a href="/signup.html">Sign Up</a>
+    </div>
+</header>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+        <h2 class="text-2xl font-bold text-blue-600 mb-6 text-center">Create Your Account</h2>
+        <form id="signupForm">
+            <div class="mb-4">
+                <label for="userType" class="block text-gray-700 text-sm font-semibold mb-2">I am a:</label>
+                <select id="userType" name="userType"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="student">Student</option>
+                    <option value="alumni">Alumni</option>
+                </select>
+            </div>
+            <div class="mb-4 input-group">
+                <label for="firstName" class="block text-gray-700 text-sm font-semibold mb-2">First Name:</label>
+                <div class="relative">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="firstName" name="firstName"
+                           class="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <p id="firstNameError" class="error-message"></p>
+            </div>
+            <div class="mb-4 input-group">
+                <label for="lastName" class="block text-gray-700 text-sm font-semibold mb-2">Last Name:</label>
+                <div class="relative">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="lastName" name="lastName"
+                           class="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <p id="lastNameError" class="error-message"></p>
+            </div>
+            <div class="mb-4 input-group">
+                <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email:</label>
+                <div class="relative">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" name="email"
+                           class="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <p id="emailError" class="error-message"></p>
+            </div>
+            <div class="mb-4 input-group">
+                <label for="batch" class="block text-gray-700 text-sm font-semibold mb-2">Batch:</label>
+                <div class="relative">
+                    <input type="text" id="batch" name="batch"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <p id="batchError" class="error-message"></p>
+            </div>
+            <div class="mb-4">
+                <label for="status" class="block text-gray-700 text-sm font-semibold mb-2">Status:</label>
+                <select id="status" name="status"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="">Select Status</option>
+                    <option value="student">Student</option>
+                    <option value="alumni">Alumni</option>
+                    <option value="faculty">Faculty</option>
+                    <option value="staff">Staff</option>
+                    <option value="other">Other</option>
+                </select>
+                <p id="statusError" class="error-message"></p>
+            </div>
+            <div class="mb-6 input-group">
+                <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password:</label>
+                <div class="relative">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password"
+                           class="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <p id="passwordError" class="error-message"></p>
+            </div>
+            <div class="mb-6 input-group">
+                <label for="confirmPassword" class="block text-gray-700 text-sm font-semibold mb-2">Confirm
+                    Password:</label>
+                <div class="relative">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword"
+                           class="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <p id="confirmPasswordError" class="error-message"></p>
+            </div>
+
+            <div class="mb-4">
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2.5 px-10 rounded focus:outline-none focus:shadow-outline transition duration-300 whitespace-nowrap w-full">
+                    <i class="fas fa-user-plus mr-2"></i> Sign Up
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <div class="flex items-center justify-center">
+                    <div class="border-t border-gray-300 flex-grow mr-3"></div>
+                    <span class="text-gray-500 text-sm font-medium">Or sign up with</span>
+                    <div class="border-t border-gray-300 flex-grow ml-3"></div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <button type="button" class="social-login-button google-button">
+                    <i class="fab fa-google"></i> Sign up with Google
+                </button>
+                <button type="button" class="social-login-button facebook-button">
+                    <i class="fab fa-facebook-f"></i> Sign up with Facebook
+                </button>
+                <button type="button" class="social-login-button phone-button">
+                    <i class="fas fa-phone"></i> Sign up with Phone Number
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between mt-4">
+                <a href="/login.html"
+                   class="inline-block align-baseline font-semibold text-sm text-blue-500 hover:text-blue-800 transition duration-300">Already
+                    have an account? Login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer class="bg-gray-200 text-gray-600 py-8 text-center mt-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <p>&copy; 2025 AlumniConnect - [Your Institution Name]. All rights reserved.</p>
+        <nav class="mt-4">
+            <a href="/privacy.html" class="text-gray-600 hover:underline mr-6">Privacy Policy</a>
+            <a href="/terms.html" class="text-gray-600 hover:underline">Terms of Service</a>
+        </nav>
+    </div>
+</footer>
+
+<script>
+    // Hamburger Menu Functionality
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    if (hamburger && mobileNav) { // Check if elements exist
+        hamburger.addEventListener('click', () => {
+            mobileNav.classList.toggle('open');
+            hamburger.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (event) => {
+            const isClickInside = mobileNav.contains(event.target) || hamburger.contains(event.target);
+
+            if (!isClickInside && mobileNav.classList.contains('open')) {
+                mobileNav.classList.remove('open');
+                hamburger.classList.remove('open');
+            }
+        });
+    }
+
+    // Signup Form Functionality
+    const signupForm = document.getElementById('signupForm');
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const userTypeSelect = document.getElementById('userType');
+    const batchInput = document.getElementById('batch');
+    const statusSelect = document.getElementById('status');
+    const firstNameError = document.getElementById('firstNameError');
+    const lastNameError = document.getElementById('lastNameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const batchError = document.getElementById('batchError');
+    const statusError = document.getElementById('statusError');
+
+    if (signupForm) { // Check if the form exists.
+        signupForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            let isValid = true;
+
+            // Validate First Name
+            if (!firstNameInput) {
+                console.error('firstNameInput is not defined');
+                isValid = false;
+            } else if (firstNameInput.value.trim() === '') {
+                firstNameError.textContent = 'First name is required.';
+                isValid = false;
+            } else if (!/^[a-zA-Z]+$/.test(firstNameInput.value.trim())) {
+                firstNameError.textContent = 'First name must contain only letters.';
+                isValid = false;
+            } else {
+                firstNameError.textContent = '';
+            }
+
+            // Validate Last Name
+             if (!lastNameInput) {
+                console.error('lastNameInput is not defined');
+                isValid = false;
+            } else if (lastNameInput.value.trim() === '') {
+                lastNameError.textContent = 'Last name is required.';
+                isValid = false;
+            } else if (!/^[a-zA-Z]+$/.test(lastNameInput.value.trim())) {
+                lastNameError.textContent = 'Last name must contain only letters.';
+                isValid = false;
+            } else {
+                lastNameError.textContent = '';
+            }
+
+            // Validate Email
+            if (!emailInput) {
+                console.error('emailInput is not defined');
+                isValid = false;
+            } else if (emailInput.value.trim() === '') {
+                emailError.textContent = 'Email is required.';
+                isValid = false;
+            } else if (!isValidEmail(emailInput.value.trim())) {
+                emailError.textContent = 'Invalid email format.';
+                isValid = false;
+            } else {
+                emailError.textContent = '';
+            }
+
+            // Validate Batch
+            if (!batchInput) {
+                console.error('batchInput is not defined');
+                isValid = false;
+            } else if (batchInput.value.trim() === '') {
+                batchError.textContent = 'Batch is required.';
+                isValid = false;
+            } else {
+                batchError.textContent = '';
+            }
+
+            // Validate Status
+            if (!statusSelect) {
+                console.error('statusSelect is not defined');
+                isValid = false;
+            } else if (statusSelect.value === '') {
+                statusError.textContent = 'Status is required.';
+                isValid = false;
+            } else {
+                statusError.textContent = '';
+            }
+
+            // Validate Password
+            if (!passwordInput) {
+                console.error('passwordInput is not defined');
+                isValid = false;
+            } else if (passwordInput.value === '') {
+                passwordError.textContent = 'Password is required.';
+                isValid = false;
+            } else if (!isValidPassword(passwordInput.value)) {
+                passwordError.textContent = 'Password must be 6-8 characters and contain at least one uppercase letter, one lowercase letter, and one special character.';
+                isValid = false;
+            } else {
+                passwordError.textContent = '';
+            }
+
+            // Validate Confirm Password
+            if (!confirmPasswordInput) {
+                console.error('confirmPasswordInput is not defined');
+                isValid = false;
+            } else if (confirmPasswordInput.value === '') {
+                confirmPasswordError.textContent = 'Confirm password is required.';
+                isValid = false;
+            } else if (confirmPasswordInput.value !== passwordInput.value) {
+                confirmPasswordError.textContent = 'Passwords do not match.';
+                isValid = false;
+            } else {
+                confirmPasswordError.textContent = '';
+            }
+
+            if (isValid) {
+                const userData = {
+                    userType: userTypeSelect.value,
+                    first_name: firstNameInput.value.trim(),
+                    last_name: lastNameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    password: passwordInput.value,
+                    batch: batchInput.value.trim(),
+                    status: statusSelect.value
+                };
+
+                try {
+                    const response = await fetch('http://localhost:3000/auth/signup', { // Make sure the URL is correct
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(userData)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert(data.message);
+                        window.location.href = '/login.html'; //  Correct the path to your login page.
+                    } else {
+                        // Handle errors from the backend
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert('Sign-up failed. Please try again.');
+                        }
+                    }
+                } catch (error) {
+                    console.error('There was an error during sign up:', error);
+                    alert('Network error. Please try again.');
+                }
+            }
+        });
+    }
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])(?!.*\s).{6,8}$/;
+        return passwordRegex.test(password);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Connections - AlumniConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Reusing hamburger menu styles */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger-line {
+            width: 28px;
+            height: 3px;
+            background-color: #374151;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+
+        .open .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-6px, 7px);
+        }
+
+        .open .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .open .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-6px, -7px);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: #f9fafb;
+            padding: 1rem 0;
+            z-index: 10;
+        }
+
+        .mobile-nav a {
+            display: block;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .mobile-nav a:hover {
+            background-color: #f3f4f6;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: none;
+            }
+
+            .mobile-nav.open {
+                display: block;
+            }
+        }
+
+        /* Enhanced Connections Page Styles with Color and Smaller Avatars */
+        .connection-card {
+            background-color: #fff;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            space-x: 1rem;
+            transition-property: color, background-color, border-color, text-decoration-line, opacity, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+            transition-duration: 0.2s;
+            transition-timing-function: ease-in-out;
+            border-left: 5px solid #667eea;
+            /* Blue accent */
+        }
+
+        .connection-card:hover {
+            border-left-color: #3f51b5;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            /* Darker blue on hover */
+        }
+
+        .connection-card-avatar {
+            flex-shrink: 0;
+            width: 40px;
+            /* Smaller width */
+            height: 40px;
+            /* Smaller height */
+            border-radius: 50%;
+            /* Make it a circle */
+            overflow: hidden;
+            /* Ensure image stays within the circle */
+        }
+
+        .connection-card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Cover the entire circular area */
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+            /* Subtle border */
+        }
+
+        .connection-card-info {
+            flex-grow: 1;
+        }
+
+        .connection-card-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .connection-card-meta {
+            font-size: 0.875rem;
+            color: #718096;
+            color: #78909c;
+            /* Darker gray */
+        }
+
+        .connection-card-mutuals {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            /* For aligning the icon and text */
+        }
+
+        .connection-card-mutuals i {
+            margin-right: 0.25rem;
+            /* Space between icon and text */
+            color: #4a5568;
+            /* Icon color - a bit darker than the text */
+            font-size: 0.8rem;
+            /* Slightly smaller icon */
+        }
+
+
+        .connection-card-actions {
+            display: flex;
+            space-x: 0.5rem;
+        }
+
+        .view-profile-link i {
+            color: #1e88e5;
+            /* A shade of blue to match the link text */
+        }
+
+        .disconnect-button {
+            color: #e53935;
+            hover:text-red-800;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition-property: color, background-color, border-color, text-decoration-line, opacity, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+            transition-duration: 0.15s;
+            transition-timing-function: ease-in-out;
+            focus-outline: none;
+        }
+
+        .connection-card-actions {
+            display: flex;
+            space-x: 0.5rem;
+            align-items: center;
+            /* Align items vertically in the action area */
+        }
+
+        .accept-button {
+            background-color: #4caf50;
+            hover:bg-green-700;
+            color: #fff;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            border-radius: 0.25rem;
+            transition-property: color, background-color, border-color, text-decoration-line, opacity, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+            transition-duration: 0.15s;
+            transition-timing-function: ease-in-out;
+            focus-outline: none;
+            display: flex;
+            align-items: center;
+            /* Align icon and text */
+        }
+
+        .accept-button i {
+            margin-right: 0.25rem;
+            color: #a5d6a7;
+            /* Light green icon color */
+        }
+
+        .decline-button {
+            background-color: #f44336;
+            hover:bg-red-700;
+            color: #fff;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            border-radius: 0.25rem;
+            transition-property: color, background-color, border-color, text-decoration-line, opacity, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+            transition-duration: 0.15s;
+            transition-timing-function: ease-in-out;
+            focus-outline: none;
+            display: flex;
+            align-items: center;
+            /* Align icon and text */
+        }
+
+        .decline-button i {
+            margin-right: 0.25rem;
+            color: #ffcdd2;
+            /* Light red icon color */
+        }
+
+        .cancel-request-button {
+            color: #ed6c02;
+            hover:text-orange-700;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition-property: color, background-color, border-color, text-decoration-line, opacity, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+            transition-duration: 0.15s;
+            transition-timing-function: ease-in-out;
+            focus-outline: none;
+            display: flex;
+            align-items: center;
+            /* Added flex for icon alignment */
+        }
+
+        .cancel-request-button i {
+            margin-right: 0.25rem;
+            color: #ffb74d;
+            /* Light orange icon color */
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #3f51b5;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            /* Blue title */
+        }
+
+        .section-title i {
+            margin-right: 0.5rem;
+            color: #64b5f6;
+            /* Blue icon */
+        }
+
+        .pending-requests-section h3 {
+            font-weight: 600;
+            color: #546e7a;
+            margin-bottom: 0.5rem;
+            /* Darker gray for subtitle */
+        }
+
+        .empty-state {
+            font-style: italic;
+            color: #9ca3af;
+        }
+
+        .disconnect-button i {
+            margin-right: 0.25rem;
+            color: #e53935;
+            /* Red icon color */
+        }
+
+        /* --- Search Styles --- */
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            border-radius: 0.375rem;
+            border: 1px solid #e0e0e0;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            background-color: #fff;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .search-icon {
+            color: #718096;
+            margin-right: 0.5rem;
+        }
+
+        .filter-button {
+            background-color: #f0f4f8;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .filter-button:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* --- Filters Dropdown Styles --- */
+        .filters-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .filters-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #fff;
+            min-width: 200px;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
+            z-index: 10;
+            margin-top: 0.5rem;
+        }
+
+        .filters-content.show {
+            display: block;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-group-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-option input[type="checkbox"] {
+            margin-right: 0.5rem;
+            /* Increased size of checkbox */
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            /* Aligned buttons to the right */
+            margin-top: 1rem;
+        }
+
+        .filter-apply-button {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+        }
+
+        .filter-apply-button:hover {
+            background-color: #2563eb;
+        }
+
+        .filter-cancel-button {
+            background-color: #e2e8f0;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            margin-right: 0.5rem;
+            /* Added right margin */
+        }
+
+        .filter-cancel-button:hover {
+            background-color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-white text-gray-800 py-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+            <a href="/" class="text-xl font-bold text-blue-600">AlumniConnect</a>
+            <div class="hidden md:flex space-x-4 items-center">
+                <a href="/profile.html" class="font-semibold text-gray-700 hover:text-blue-500 transition duration-300">Profile</a>
+                <a href="/connections.html" class="font-semibold text-blue-500 hover:text-blue-700 transition duration-300">Connections</a>
+                <a href="/feed.html" class="text-gray-700 hover:text-blue-500 transition duration-300">Feed</a>
+                <a href="/groups.html" class="text-gray-700 hover:text-blue-500 transition duration-duration-300">Groups</a>
+                <a href="/login.html" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300">Logout</a>
+            </div>
+            <button id="hamburger" class="hamburger focus:outline-none md:hidden">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+        </div>
+        <div id="mobile-nav" class="mobile-nav">
+            <a href="/index.html"><i class="fas fa-home mr-2"></i>Home</a>
+            <a href="/profile.html"><i class="fas fa-user mr-2"></i>Profile</a>
+            <a href="/connections.html"><i class="fas fa-link mr-2"></i>Connections</a>
+            <a href="/feed.html"><i class="fas fa-newspaper mr-2"></i>Feed</a>
+            <a href="/groups.html"><i class="fas fa-users mr-2"></i>Groups</a>
+            <a href="/login.html"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl p-8">
+            <h2 class="section-title"><i class="fas fa-link"></i>Your Connections</h2>
+
+            <div class="search-container">
+                <div class="search-input-group">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search connections..." class="search-input">
+                    <div class="filters-dropdown">
+                        <button id="filter-button" class="filter-button">
+                            <i class="fas fa-filter mr-2"></i>Filters
+                        </button>
+                        <div id="filters-content" class="filters-content">
+                            <div class="filter-group" id="degree-filter-group">
+                                <span class="filter-group-label">Degree</span>
+                                <div class="filter-options" id="degree-filter-options">
+                                    </div>
+                            </div>
+                            <div class="filter-group" id="graduation-year-filter-group">
+                                <span class="filter-group-label">Year of Graduation</span>
+                                <div class="filter-options" id="graduation-year-filter-options">
+                                    </div>
+                            </div>
+                            <div class="filter-group" id="company-filter-group">
+                                <span class="filter-group-label">Company</span>
+                                <div class="filter-options" id="company-filter-options">
+                                    </div>
+                            </div>
+                            <div class="filter-group" id="location-filter-group">
+                                <span class="filter-group-label">Location</span>
+                                <div class="filter-options" id="location-filter-options">
+                                    </div>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="filter-cancel-button" class="filter-cancel-button">Cancel</button>
+                                <button id="filter-apply-button" class="filter-apply-button">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="connections-list" class="mb-6">
+                </div>
+
+            <div class="pending-requests-section">
+                <h2 class="section-title"><i class="fas fa-user-plus"></i>Pending Requests</h2>
+
+                <h3 class="font-semibold text-gray-700 mb-2" style="color: #546e7a;">Incoming Requests</h3>
+                <div id="incoming-requests" class="mb-6">
+                    </div>
+                <p id="no-incoming-requests" class="empty-state" style="display: none;">No incoming connection requests.</p>
+
+                <h3 class="font-semibold text-gray-700 mb-2" style="color: #546e7a;">Outgoing Requests</h3>
+                <div id="outgoing-requests" class="mb-6">
+                    </div>
+                <p id="no-outgoing-requests" class="empty-state" style="display: none;">No outgoing connection requests.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        hamburger.addEventListener('click', () => {
+            mobileNav.classList.toggle('open');
+            hamburger.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (event) => {
+            const isClickInside = mobileNav.contains(event.target) || hamburger.contains(event.target);
+
+            if (!isClickInside && mobileNav.classList.contains('open')) {
+                mobileNav.classList.remove('open');
+                hamburger.classList.remove('open');
+            }
+        });
+
+        // --- Dynamic Data Fetching and Rendering ---
+        const connectionsList = document.getElementById('connections-list');
+        const incomingRequestsList = document.getElementById('incoming-requests');
+        const outgoingRequestsList = document.getElementById('outgoing-requests');
+        const noIncomingRequestsMessage = document.getElementById('no-incoming-requests');
+        const noOutgoingRequestsMessage = document.getElementById('no-outgoing-requests');
+        const emptyConnectionsMessage = document.querySelector('#connections-list .empty-state'); // Select the empty state message within the connections list
+
+        // --- Search functionality ---
+        const searchInput = document.getElementById('search-input');
+        let searchTerm = '';
+
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            filterAndDisplayConnections();
+        });
+
+        // --- Filter functionality ---
+        const filterButton = document.getElementById('filter-button');
+        const filtersContent = document.getElementById('filters-content');
+        const filterApplyButton = document.getElementById('filter-apply-button');
+        const filterCancelButton = document.getElementById('filter-cancel-button');
+
+        let activeFilters = {
+            degree: [],
+            graduationYear: [],
+            company: [],
+            location: [] // Add new filter
+        };
+
+        filterButton.addEventListener('click', () => {
+            filtersContent.classList.toggle('show');
+        });
+
+        filterCancelButton.addEventListener('click', () => {
+            filtersContent.classList.remove('show');
+            resetFilters();
+            filterAndDisplayConnections(); //show all connections after clearing filters
+        });
+
+        filterApplyButton.addEventListener('click', () => {
+            filtersContent.classList.remove('show');
+            filterAndDisplayConnections();
+        });
+
+        //handle checkbox changes
+        function handleCheckboxChange(e) {
+            const filterType = e.target.name;
+            const filterValue = e.target.value;
+
+            if (e.target.checked) {
+                activeFilters[filterType].push(filterValue);
+            } else {
+                activeFilters[filterType] = activeFilters[filterType].filter(
+                    (item) => item !== filterValue
+                );
+            }
+        }
+
+        function resetFilters() {
+            activeFilters = {
+                degree: [],
+                graduationYear: [],
+                company: [],
+                location: []
+            };
+            const filterCheckboxes = filtersContent.querySelectorAll('input[type="checkbox"]');
+            filterCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // Helper function to create a connection card element
+        function createConnectionCard(connection, type = 'connection') {
+            const card = document.createElement('div');
+            card.className = 'mb-4 connection-card';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'connection-card-avatar';
+            const img = document.createElement('img');
+            img.src = connection.avatar || 'https://via.placeholder.com/60'; // Use a placeholder if no avatar
+            img.alt = connection.name;
+            avatar.appendChild(img);
+
+            const info = document.createElement('div');
+            info.className = 'connection-card-info';
+            const name = document.createElement('h3');name.className = 'connection-card-name';
+            name.textContent = connection.name;
+            const meta = document.createElement('p');
+            meta.className = 'connection-card-meta';
+            meta.textContent =connection.meta || ''; // Use empty string if no meta
+
+             // Show mutual connections
+            if (type === 'connection' && connection.mutualConnections > 0) {
+                const mutualsDiv = document.createElement('div');
+                mutualsDiv.className = 'connection-card-mutuals';
+                mutualsDiv.innerHTML = `<i class="fas fa-users"></i> ${connection.mutualConnections} mutual connections`;
+                info.appendChild(mutualsDiv);
+            }
+
+            info.appendChild(name);
+            info.appendChild(meta);
+
+            const actions = document.createElement('div');
+            actions.className = 'connection-card-actions';
+
+            const profileLink = document.createElement('a');
+            profileLink.href = `/profile/${connection.id}`; //  Use connection.id
+            profileLink.className = 'view-profile-link';
+            profileLink.innerHTML = '<i class="fas fa-user mr-1"></i>View Profile';
+
+            actions.appendChild(profileLink);
+
+            if (type === 'connection') {
+                const disconnectButton = document.createElement('button');
+                disconnectButton.className = 'disconnect-button';
+                disconnectButton.innerHTML = '<i class="fas fa-user-minus mr-1"></i>Disconnect';
+                disconnectButton.addEventListener('click', () => {
+                    // Implement disconnect logic here
+                    console.log(`Disconnect from ${connection.name}`);
+                    // Remove the card from the DOM
+                    card.remove();
+                    //check if there are any connections left, and show empty message if not
+                    if (connectionsList.children.length === 0) {
+                        emptyConnectionsMessage.style.display = 'block';
+                    }
+
+                });
+                actions.appendChild(disconnectButton);
+            } else if (type === 'incoming') {
+                const acceptButton = document.createElement('button');
+                acceptButton.className = 'accept-button';
+                acceptButton.innerHTML = '<i class="fas fa-check mr-1"></i>Accept';
+                acceptButton.addEventListener('click', () => {
+                    // Implement accept logic here
+                    console.log(`Accept connection request from ${connection.name}`);
+                    // After accepting, move the connection card to the main connections list
+                    connectionsList.appendChild(card);
+                    // change the button to disconnect
+                    actions.removeChild(acceptButton);
+                    actions.removeChild(declineButton);
+
+                    const disconnectButton = document.createElement('button');
+                    disconnectButton.className = 'disconnect-button';
+                    disconnectButton.innerHTML = '<i class="fas fa-user-minus mr-1"></i>Disconnect';
+                    disconnectButton.addEventListener('click', () => {
+                        // Implement disconnect logic here
+                        console.log(`Disconnect from ${connection.name}`);
+                        // Remove the card from the DOM
+                        card.remove();
+                         if (connectionsList.children.length === 0) {
+                            emptyConnectionsMessage.style.display = 'block';
+                        }
+                    });
+                    actions.appendChild(disconnectButton)
+
+                    // Remove the card from the incoming requests list
+                    card.remove();
+                    // Hide the empty message if there are no more incoming requests
+                    if (incomingRequestsList.children.length === 0) {
+                        noIncomingRequestsMessage.style.display = 'none';
+                    }
+                });
+                actions.appendChild(acceptButton);
+
+                const declineButton = document.createElement('button');
+                declineButton.className = 'decline-button';
+                declineButton.innerHTML = '<i class="fas fa-times mr-1"></i>Decline';
+                declineButton.addEventListener('click', () => {
+                    // Implement decline logic here
+                    console.log(`Decline connection request from ${connection.name}`);
+                    // Remove the card from the DOM
+                    card.remove();
+                    // Hide the empty message if there are no more incoming requests
+                    if (incomingRequestsList.children.length === 0) {
+                        noIncomingRequestsMessage.style.display = 'none';
+                    }
+                });
+                actions.appendChild(declineButton);
+            } else if (type === 'outgoing') {
+                const cancelButton = document.createElement('button');
+                cancelButton.className = 'cancel-request-button';
+                cancelButton.innerHTML = '<i class="fas fa-ban mr-1"></i>Cancel Request';
+                cancelButton.addEventListener('click', () => {
+                    // Implement cancel request logic here
+                    console.log(`Cancel request to ${connection.name}`);
+                    // Remove the card from the DOM
+                    card.remove();
+                    // Hide the empty message if there are no more outgoing requests
+                    if (outgoingRequestsList.children.length === 0) {
+                        noOutgoingRequestsMessage.style.display = 'none';
+                    }
+                });
+                actions.appendChild(cancelButton);
+            }
+
+            card.appendChild(avatar);
+            card.appendChild(info);
+            card.appendChild(actions);
+
+            return card;
+        }
+
+        // --- Fetch and Display Data ---
+        // Replace these with your actual API endpoints
+        const API_BASE_URL = '/api'; //  your API base URL
+
+        let allConnections = []; //store all connections
+
+        // Fetch connections
+        fetch(`${API_BASE_URL}/connections`)
+            .then(response => response.json())
+            .then(data => {
+                allConnections = data; //store
+                if (data.length > 0) {
+                    filterAndDisplayConnections();
+                } else {
+                    emptyConnectionsMessage.style.display = 'block'; // Show the empty message
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching connections:', error);
+                // Display an error message to the user
+                connectionsList.innerHTML = '<p class="text-red-500">Failed to load connections. Please try again later.</p>';
+            });
+
+        // Fetch incoming requests
+        fetch(`${API_BASE_URL}/requests/incoming`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(request => {
+                        const requestCard = createConnectionCard(request, 'incoming');
+                        incomingRequestsList.appendChild(requestCard);
+                    });
+                } else {
+                    noIncomingRequestsMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching incoming requests:', error);
+                // Display an error message
+                incomingRequestsList.innerHTML = '<p class="text-red-500">Failed to load incoming requests.</p>';
+            });
+
+        // Fetch outgoing requests
+        fetch(`${API_BASE_URL}/requests/outgoing`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(request => {
+                        const requestCard = createConnectionCard(request, 'outgoing');
+                        outgoingRequestsList.appendChild(requestCard);
+                    });
+                } else {
+                    noOutgoingRequestsMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching outgoing requests:', error);
+                // Display error message
+                outgoingRequestsList.innerHTML = '<p class="text-red-500">Failed to load outgoing requests.</p>';
+            });
+
+        // --- Fetch filter options from the server ---
+        function fetchFilterOptions() {
+            Promise.all([
+                fetch(`${API_BASE_URL}/filters/degrees`).then(res => res.json()),
+                fetch(`${API_BASE_URL}/filters/graduationYears`).then(res => res.json()),
+                fetch(`${API_BASE_URL}/filters/companies`).then(res => res.json()),
+                fetch(`${API_BASE_URL}/filters/locations`).then(res => res.json())
+            ]).then(([degrees, graduationYears, companies, locations]) => {
+                populateFilterOptions('degree-filter-options', degrees, 'degree');
+                populateFilterOptions('graduation-year-filter-options', graduationYears, 'graduationYear');
+                populateFilterOptions('company-filter-options', companies, 'company');
+                populateFilterOptions('location-filter-options', locations, 'location');
+            }).catch(err => {
+                console.error('Error fetching filter options:', err);
+                // display error message to user
+            })
+        }
+
+        function populateFilterOptions(containerId, options, filterType) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear existing options
+
+            options.forEach(option => {
+                const filterOptionDiv = document.createElement('div');
+                filterOptionDiv.className = 'filter-option';
+
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.id = `filter-${filterType}-${option.value}`;
+                input.name = filterType;
+                input.value = option.value;
+                input.addEventListener('change', handleCheckboxChange);
+
+                const label = document.createElement('label');
+                label.for = `filter-${filterType}-${option.value}`;
+                label.textContent = option.label;
+
+                filterOptionDiv.appendChild(input);
+                filterOptionDiv.appendChild(label);
+                container.appendChild(filterOptionDiv);
+            });
+        }
+
+        // Call fetchFilterOptions when the page loads
+        window.onload = fetchFilterOptions;
+
+        function filterAndDisplayConnections() {
+            const filteredConnections = allConnections.filter(connection => {
+                const searchMatch =
+                    connection.name.toLowerCase().includes(searchTerm) ||
+                    (connection.meta && connection.meta.toLowerCase().includes(searchTerm));
+
+                const degreeMatch =
+                    activeFilters.degree.length === 0 || activeFilters.degree.includes(connection.degree);
+
+                const graduationYearMatch =
+                    activeFilters.graduationYear.length === 0 ||
+                    activeFilters.graduationYear.includes(connection.graduationYear);
+
+                const companyMatch =
+                    activeFilters.company.length === 0 || activeFilters.company.includes(connection.company);
+
+                const locationMatch =
+                    activeFilters.location.length === 0 || activeFilters.location.includes(connection.location);
+
+                return searchMatch && degreeMatch && graduationYearMatch && companyMatch && locationMatch;
+            });
+
+            connectionsList.innerHTML = ''; // Clear the list
+            if (filteredConnections.length > 0) {
+                filteredConnections.forEach(connection => {
+                    const connectionCard = createConnectionCard(connection, 'connection');
+                    connectionsList.appendChild(connectionCard);
+                });
+                emptyConnectionsMessage.style.display = 'none';
+            } else {
+                emptyConnectionsMessage.style.display = 'block'; //show no results message
+            }
+        }
+    </script>
+</body>
+</html>

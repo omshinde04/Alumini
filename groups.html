@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groups - AlumniConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        .container {
+            max-width: 768px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            @media (min-width: 640px) {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            @media (min-width: 1024px) {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        header {
+            background-color: #fff;
+            color: #2d3748;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        header .container {
+            max-width: 768px;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            @media (min-width: 640px) {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            @media (min-width: 1024px) {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        header a {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3b82f6;
+            &:hover {
+                color: #2563eb;
+            }
+            transition-property: color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        header nav a {
+            font-weight: 600;
+            color: #4b5563;
+            &:hover {
+                color: #3b82f6;
+            }
+            transition-property: color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        header .bg-blue-500 {
+            &:hover {
+                background-color: #2563eb;
+            }
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            @media (max-width: 768px) {
+                display: block;
+            }
+        }
+
+        .hamburger-line {
+            width: 28px;
+            height: 3px;
+            background-color: #374151;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+
+        .open .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-6px, 7px);
+        }
+
+        .open .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .open .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-6px, -7px);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: #f9fafb;
+            padding: 1rem 0;
+            z-index: 10;
+            @media (max-width: 768px) {
+                display: none;
+            }
+            &.open {
+                display: block;
+            }
+        }
+
+        .mobile-nav a {
+            display: block;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .mobile-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        .mobile-nav a:hover {
+            background-color: #f3f4f6;
+        }
+
+        .groups-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            @media (min-width: 768px) {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .groups-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            @media (min-width: 768px) {
+                margin-bottom: 0;
+            }
+        }
+
+        .groups-title i {
+            margin-right: 0.75rem;
+            color: #60a5fa;
+        }
+
+        .create-group-button {
+            background-color: #10b981;
+            &:hover {
+                background-color: #059669;
+            }
+            color: #fff;
+            font-weight: 500;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            border-radius: 0.375rem;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            width: 100%;
+            @media (min-width: 768px) {
+                width: auto;
+            }
+        }
+
+        .groups-container {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .group-card {
+            background-color: #f9fafb;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            @media (min-width: 640px) {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .group-info {
+            flex-grow: 1;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+            @media (min-width: 640px) {
+                margin-bottom: 0;
+            }
+        }
+
+        .group-name {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        .group-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .group-meta {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .group-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            @media (min-width: 640px) {
+                flex-direction: row;
+                width: auto;
+            }
+        }
+
+        .group-actions button {
+            color: #fff;
+            font-weight: 500;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            border-radius: 0.375rem;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            width: 100%;
+            @media (min-width: 640px) {
+                width: auto;
+            }
+        }
+
+        .group-actions button:hover {
+            background-color: #4338ca;
+        }
+
+        .join-button {
+            background-color: #4f46e5;
+        }
+
+        .leave-button {
+            background-color: #ef4444;
+            &:hover {
+                background-color: #dc2626;
+            }
+        }
+
+        .members-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            width: 100%;
+        }
+
+        .members-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            @media (min-width: 640px) {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .members-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+            @media (min-width: 640px) {
+                margin-bottom: 0;
+            }
+        }
+
+        .members-count {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .member-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+        }
+
+        .member-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #d1d5db;
+        }
+
+        .member-name {
+            font-size: 0.875rem;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .group-settings {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .settings-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+
+        .edit-group-button {
+            background-color: #f59e0b;
+            &:hover {
+                background-color: #d97706;
+            }
+        }
+
+        .delete-group-button {
+            background-color: #ef4444;
+            &:hover {
+                background-color: #dc2626;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 20;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: #6b7280;
+            font-size: 1.25rem;
+            cursor: pointer;
+            &:hover {
+                color: #374151;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            color: #374151;
+            &:focus {
+                outline: none;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            }
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 4rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions button {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        .modal-actions button:hover {
+            filter: brightness(95%);
+        }
+
+        .cancel-button {
+            background-color: #e5e7eb;
+            color: #374151;
+            &:hover {
+                background-color: #d1d5db;
+            }
+        }
+
+        .save-button {
+            background-color: #10b981;
+            color: #fff;
+        }
+
+        .delete-modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .delete-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .delete-modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .delete-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .delete-modal-actions button {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        .delete-modal-actions button:hover {
+            filter: brightness(95%);
+        }
+
+        .delete-cancel-button {
+            background-color: #e5e7eb;
+            color: #374151;
+            &:hover {
+                background-color: #d1d5db;
+            }
+        }
+
+        .delete-confirm-button {
+            background-color: #ef4444;
+            color: #fff;
+            &:hover {
+                background-color: #dc2626;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-white text-gray-800 py-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+            <a href="/" class="text-xl font-bold text-blue-600">AlumniConnect</a>
+            <div class="hidden md:flex space-x-4 items-center">
+                <a href="/profile.html" class="font-semibold text-gray-700 hover:text-blue-500 transition duration-300">Profile</a>
+                <a href="/connections.html" class="font-semibold text-gray-700 hover:text-blue-500 transition duration-300">Connections</a>
+                <a href="/feed.html" class="text-gray-700 hover:text-blue-500 transition duration-300">Feed</a>
+                <a href="/groups.html" class="font-semibold text-blue-500 hover:text-blue-700 transition duration-300">Groups</a>
+                <a href="/login.html" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300">Logout</a>
+            </div>
+            <button id="hamburger" class="hamburger focus:outline-none md:hidden">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+        </div>
+        <div id="mobile-nav" class="mobile-nav">
+            <a href="/index.html"><i class="fas fa-home mr-2"></i>Home</a>
+            <a href="/profile.html"><i class="fas fa-user mr-2"></i>Profile</a>
+            <a href="/connections.html"><i class="fas fa-link mr-2"></i>Connections</a>
+            <a href="/feed.html"><i class="fas fa-newspaper mr-2"></i>Feed</a>
+            <a href="/groups.html"><i class="fas fa-users mr-2"></i>Groups</a>
+            <a href="/login.html"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="groups-header">
+            <h2 class="groups-title"><i class="fas fa-users"></i>Alumni Groups</h2>
+            <button id="create-group-button" class="create-group-button"><i class="fas fa-plus mr-2"></i>Create Group</button>
+        </div>
+
+        <div id="groups-container" class="groups-container">
+            </div>
+    </main>
+
+    <div id="edit-group-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Group</h2>
+                <span class="close-button" id="edit-modal-close">&times;</span>
+            </div>
+            <form id="edit-group-form">
+                <div class="form-group">
+                    <label for="edit-group-name">Group Name:</label>
+                    <input type="text" id="edit-group-name" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="edit-group-description">Description:</label>
+                    <textarea id="edit-group-description" name="description"></textarea>
+                </div>
+            </form>
+            <div class="modal-actions">
+                <button type="button" class="cancel-button" id="edit-modal-cancel">Cancel</button>
+                <button type="button" class="save-button" id="edit-modal-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-group-modal" class="modal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-header">
+                <h2 class="delete-modal-title">Delete Group</h2>
+                <span class="close-button" id="delete-modal-close">&times;</span>
+            </div>
+            <p>Are you sure you want to delete this group?</p>
+            <div class="delete-modal-actions">
+                <button type="button" class="delete-cancel-button" id="delete-modal-cancel">Cancel</button>
+                <button type="button" class="delete-confirm-button" id="delete-modal-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+        const groupsContainer = document.getElementById('groups-container');
+        const createGroupButton = document.getElementById('create-group-button');
+
+        hamburger.addEventListener('click', () => {
+            mobileNav.classList.toggle('open');
+            hamburger.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (event) => {
+            const isClickInside = mobileNav.contains(event.target) || hamburger.contains(event.target);
+            if (!isClickInside && mobileNav.classList.contains('open')) {
+                mobileNav.classList.remove('open');
+                hamburger.classList.remove('open');
+            }
+        });
+
+        let groupsData = [
+            {
+                id: '1',
+                name: "Software Development Alumni",
+                description: "A space for alumni working in software development to connect and share insights.",
+                members: [
+                    { id: 'm1', name: "Alice Smith" },
+                    { id: 'm2', name: "Bob Johnson" },
+                ],
+                createdBy: 'u1',
+            },
+            {
+                id: '2',
+                name: "Marketing Professionals Network",
+                description: "For alumni in marketing roles to discuss trends and opportunities.",
+                members: [
+                    { id: 'm3', name: "Charlie Brown" },
+                    { id: 'm4', name: "Diana Miller" },
+                ],
+                createdBy: 'u2',
+            },
+            {
+                id: '3',
+                name: "Entrepreneurs Circle",
+                description: "Connecting alumni who have started their own businesses.",
+                members: [{ id: 'm5', name: "Ethan Davis" }],
+                createdBy: 'u1',
+            },
+            {
+                id: '4',
+                name: "Healthcare Professionals Group",
+                description: "A group for alumni working in the healthcare industry.",
+                members: [{id: 'm6', name: "Frank Miller"}],
+                createdBy: 'u3'
+            },
+            {
+                id: '5',
+                name: "Finance and Investment Alumni",
+                description: "For those in finance, banking, and investment sectors.",
+                members: [],
+                createdBy: 'u2'
+            },
+            {
+                id: '6',
+                name: "Design and Creative Professionals",
+                description: "A network for alumni in design, arts, and creative fields.",
+                members: [{id: 'm7', name: "Grace Taylor"}],
+                createdBy: 'u4'
+            },
+            {
+                id: '7',
+                name: "Education and Academia Network",
+                description: "Connecting alumni working in education and academic research.",
+                members: [],
+                createdBy: 'u3'
+            },
+            {
+                id: '8',
+                name: "Tech Industry Networking Group",
+                description: "For alumni working in the broader technology industry.",
+                members: [{id: 'm8', name: "Henry Wilson"}, {id: 'm9', name: "Ivy Anderson"}],
+                createdBy: 'u1'
+            }
+        ];
+
+        let loggedInUser = { id: 'u1' };
+
+        function createGroupCard(group) {
+            const groupCard = document.createElement('div');
+            groupCard.className = 'group-card';
+            groupCard.dataset.groupId = group.id;
+
+            const groupInfo = document.createElement('div');
+            groupInfo.className = 'group-info';
+
+            const groupName = document.createElement('h3');
+            groupName.className = 'group-name';
+            groupName.textContent = group.name;
+
+            const groupDescription = document.createElement('p');
+            groupDescription.className = 'group-description';
+            groupDescription.textContent = group.description;
+
+            const groupMeta = document.createElement('p');
+            groupMeta.className = 'group-meta';
+            groupMeta.innerHTML = `<i class="fas fa-user-group mr-1"></i> ${group.members.length} Members`;
+
+            groupInfo.appendChild(groupName);
+            groupInfo.appendChild(groupDescription);
+            groupInfo.appendChild(groupMeta);
+
+            const groupActions = document.createElement('div');
+            groupActions.className = 'group-actions';
+
+            const joinLeaveButton = document.createElement('button');
+            joinLeaveButton.textContent = isUserJoinedGroup(group.id) ? 'Leave' : 'Join';
+            joinLeaveButton.className = isUserJoinedGroup(group.id) ? 'leave-button' : 'join-button';
+            joinLeaveButton.addEventListener('click', () => {
+                handleJoinLeaveGroup(group.id);
+            });
+            groupActions.appendChild(joinLeaveButton);
+
+            if (group.createdBy === loggedInUser.id) {
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.className = 'edit-group-button';
+                editButton.addEventListener('click', () => {
+                    openEditGroupModal(group.id);
+                });
+                groupActions.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-group-button';
+                deleteButton.addEventListener('click', () => {
+                    openDeleteGroupModal(group.id);
+                });
+                groupActions.appendChild(deleteButton);
+            }
+
+            const membersSection = document.createElement('div');
+            membersSection.className = 'members-section';
+
+            const membersHeader = document.createElement('div');
+            membersHeader.className = 'members-header';
+
+            const membersTitle = document.createElement('h4');
+            membersTitle.className = 'members-title';
+            membersTitle.textContent = 'Members';
+
+            const membersCount = document.createElement('span');
+            membersCount.className = 'members-count';
+            membersCount.textContent = `(${group.members.length})`;
+
+            membersHeader.appendChild(membersTitle);
+            membersHeader.appendChild(membersCount);
+            membersSection.appendChild(membersHeader);
+
+            const memberList = document.createElement('div');
+            memberList.className = 'member-list';
+
+            group.members.forEach(member => {
+                const memberCard = document.createElement('div');
+                memberCard.className = 'member-card';
+
+                const memberAvatar = document.createElement('div');
+                memberAvatar.className = 'member-avatar';
+
+                const memberName = document.createElement('span');
+                memberName.className = 'member-name';
+                memberName.textContent = member.name;
+
+                memberCard.appendChild(memberAvatar);
+                memberCard.appendChild(memberName);
+                memberList.appendChild(memberCard);
+            });
+
+            membersSection.appendChild(memberList);
+
+            groupCard.appendChild(groupInfo);
+            groupCard.appendChild(groupActions);
+            groupCard.appendChild(membersSection);
+
+            return groupCard;
+        }
+
+        function renderGroups() {
+            groupsContainer.innerHTML = '';
+            groupsData.forEach(group => {
+                const groupCard = createGroupCard(group);
+                groupsContainer.appendChild(groupCard);
+            });
+        }
+
+        function isUserJoinedGroup(groupId) {
+            const group = groupsData.find(g => g.id === groupId);
+            return group.members.some(member => member.id === loggedInUser.id);
+        }
+
+        function handleJoinLeaveGroup(groupId) {
+            const group = groupsData.find(g => g.id === groupId);
+            if (!group) return;
+
+            if (isUserJoinedGroup(groupId)) {
+                group.members = group.members.filter(member => member.id !== loggedInUser.id);
+            } else {
+                group.members.push({ id: loggedInUser.id, name: "You" });
+            }
+            renderGroups();
+        }
+
+        const editGroupModal = document.getElementById('edit-group-modal');
+        const editModalClose = document.getElementById('edit-modal-close');
+        const editModalCancel = document.getElementById('edit-modal-cancel');
+        const editModalSave = document.getElementById('edit-modal-save');
+        const editGroupNameInput = document.getElementById('edit-group-name');
+        const editGroupDescriptionInput = document.getElementById('edit-group-description');
+        let editingGroupId = null;
+
+        function openEditGroupModal(groupId) {
+            const group = groupsData.find(g => g.id === groupId);
+            if (!group) return;
+
+            editingGroupId = groupId;
+            editGroupNameInput.value = group.name;
+            editGroupDescriptionInput.value = group.description;
+            editGroupModal.style.display = 'block';
+        }
+
+        editModalClose.addEventListener('click', () => {
+            editGroupModal.style.display = 'none';
+            editingGroupId = null;
+        });
+
+        editModalCancel.addEventListener('click', () => {
+            editGroupModal.style.display = 'none';
+            editingGroupId = null;
+        });
+
+        editModalSave.addEventListener('click', () => {
+            if (!editingGroupId) return;
+
+            const newName = editGroupNameInput.value.trim();
+            const newDescription = editGroupDescriptionInput.value.trim();
+
+            if (newName && newDescription) {
+                const group = groupsData.find(g => g.id === editingGroupId);
+                if (group) {
+                    group.name = newName;
+                    group.description = newDescription;
+                    renderGroups();
+                }
+                editGroupModal.style.display = 'none';
+                editingGroupId = null;
+            } else {
+                alert('Group name and description cannot be empty.');
+            }
+        });
+
+        const deleteGroupModal = document.getElementById('delete-group-modal');
+        const deleteModalClose = document.getElementById('delete-modal-close');
+        const deleteModalCancel = document.getElementById('delete-modal-cancel');
+        const deleteModalDelete = document.getElementById('delete-modal-delete');
+        let deletingGroupId = null;
+
+        function openDeleteGroupModal(groupId) {
+            deletingGroupId = groupId;
+            deleteGroupModal.style.display = 'block';
+        }
+
+        deleteModalClose.addEventListener('click', () => {
+            deleteGroupModal.style.display = 'none';
+            deletingGroupId = null;
+        });
+
+        deleteModalCancel.addEventListener('click', () => {
+            deleteGroupModal.style.display = 'none';
+            deletingGroupId = null;
+        });
+
+        deleteModalDelete.addEventListener('click', () => {
+            if (!deletingGroupId) return;
+
+            groupsData = groupsData.filter(g => g.id !== deletingGroupId);
+            renderGroups();
+            deleteGroupModal.style.display = 'none';
+            deletingGroupId = null;
+        });
+
+        createGroupButton.addEventListener('click', () => {
+            const newGroupName = prompt("Enter the name of the new group:");
+            const newGroupDescription = prompt("Enter the description of the new group:");
+
+            if (newGroupName && newGroupDescription) {
+                const newGroup = {
+                    id: String(Date.now()),
+                    name: newGroupName,
+                    description: newGroupDescription,
+                    members: [{id: loggedInUser.id, name: "You"}],
+                    createdBy: loggedInUser.id,
+                };
+                groupsData.push(newGroup);
+                renderGroups();
+                alert(`Group "${newGroupName}" has been created!`);
+            } else {
+                alert("Group name and description cannot be empty.");
+            }
+        });
+
+        renderGroups();
+    </script>
+</body>
+</html>

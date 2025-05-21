@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Alumni User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="css/styles.css" rel="stylesheet">
+
+</head>
+<body class="bg-gray-100 font-poppins text-gray-800 min-h-screen">
+
+<div class="dashboard-container max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="dashboard-header bg-blue-600 rounded-xl shadow-lg p-6 mb-8 text-center">
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">Alumni User Dashboard</h1>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1">+ Add User</button>
+            <input type="text" class="search-bar w-full md:w-1/2 py-2 px-3 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" id="searchInput" placeholder="Search Users..." onkeyup="filterUsers()">
+        </div>
+    </div>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold text-blue-500 mb-2">Total Alumni</h2>
+            <p class="text-2xl font-bold text-gray-800">1,500+</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold text-green-500 mb-2">Active Alumni (Last Year)</h2>
+            <p class="text-2xl font-bold text-gray-800">850+</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold text-yellow-500 mb-2">New Alumni (This Year)</h2>
+            <p class="text-2xl font-bold text-gray-800">120+</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold text-blue-500 mb-2">Alumni in Mentorship</h2>
+            <p class="text-2xl font-bold text-gray-800">250+</p>
+        </div>
+    </section>
+
+    <section class="mb-6 p-4 bg-white rounded-xl shadow-lg flex flex-wrap gap-4 items-center">
+        <div class="form-control">
+            <label for="batchFilter" class="block text-gray-700 text-sm font-semibold mb-1">Filter by Batch:</label>
+            <select id="batchFilter" class="w-full md:w-auto py-2 px-3 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All Batches</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                </select>
+        </div>
+        <div class="form-control">
+            <label for="statusFilter" class="block text-gray-700 text-sm font-semibold mb-1">Filter by Status:</label>
+            <select id="statusFilter" class="w-full md:w-auto py-2 px-3 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="blocked">Blocked</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label for="professionFilter" class="block text-gray-700 text-sm font-semibold mb-1">Filter by Profession:</label>
+            <input type="text" id="professionFilter" class="w-full md:w-auto py-2 px-3 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter profession">
+        </div>
+        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500" onclick="filterUsers()">Apply Filters</button>
+        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="resetFilters()">Reset Filters</button>
+    </section>
+
+    <div class="user-card bg-white rounded-xl shadow-lg overflow-x-auto">
+        <table class="user-table w-full text-left">
+            <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="py-3.5 px-4 font-semibold text-sm">Name</th>
+                    <th class="py-3.5 px-4 font-semibold text-sm">Email</th>
+                    <th class="py-3.5 px-4 font-semibold text-sm">Batch</th>
+                    <th class="py-3.5 px-4 font-semibold text-sm">Status</th>
+                    <th class="py-3.5 px-4 font-semibold text-sm">Role</th>
+                    <th class="py-3.5 px-4 font-semibold text-sm">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                </tbody>
+        </table>
+        <div class="pagination flex justify-center gap-4 mt-4">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Prev</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">1</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">2</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Next</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fixed z-100 left-0 top-0 w-full h-full bg-black/50 backdrop-blur-md hidden" id="userModal">
+    <div class="modal-content bg-white m-5 md:m-auto rounded-xl shadow-lg p-6 md:p-8 w-11/12 md:max-w-md text-gray-800">
+        <div class="modal-header flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">Add / Edit User</h2>
+            <span class="close-button text-gray-400 hover:text-gray-600 text-2xl cursor-pointer" onclick="closeModal('userModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Name</label>
+                <input type="text" class="w-full py-2 px-3 rounded-md bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter name">
+            </div>
+            <div class="form-group mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Email</label>
+                <input type="email" class="w-full py-2 px-3 rounded-md bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter email">
+            </div>
+            <div class="form-group mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Batch</label>
+                <input type="text" class="w-full py-2 px-3 rounded-md bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter batch">
+            </div>
+            <div class="form-group mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Status</label>
+                <select class="w-full py-2.5 px-3 rounded-md bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Active</option>
+                    <option>Blocked</option>
+                </select>
+            </div>
+            <div class="form-actions flex justify-end gap-4">
+                <button class="save-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200" onclick="saveUser()">Save</button>
+                <button class="cancel-button bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200" onclick="closeModal('userModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fixed z-100 left-0 top-0 w-full h-full bg-black/50 backdrop-blur-md hidden" id="profileModal">
+    <div class="modal-content bg-white m-5 md:m-auto rounded-xl shadow-lg p-6 md:p-8 w-11/12 md:max-w-md text-gray-800">
+        <div class="modal-header flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">User Profile</h2>
+            <span class="close-button text-gray-400 hover:text-gray-600 text-2xl cursor-pointer" onclick="closeModal('profileModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p class="text-gray-700 mb-2"><span class="font-semibold text-gray-800">Name:</span> Om Shinde</p>
+            <p class="text-gray-700 mb-2"><span class="font-semibold text-gray-800">Email:</span> om@email.com</p>
+            <p class="text-gray-700 mb-2"><span class="font-semibold text-gray-800">Batch:</span> 2023</p>
+            </div>
+    </div>
+</div>
+
+
+<script>
+    // Sample user data (replace with your actual data)
+    const users = [
+        { name: "Admin User", email: "admin@email.com", batch: "2020", status: "active", profession: "System Admin", role: "admin" },
+        { name: "Om Shinde", email: "om@email.com", batch: "2023", status: "active", profession: "Software Engineer", role: "user" },
+        { name: "Priya Sharma", email: "priya@email.com", batch: "2022", status: "active", profession: "Data Scientist", role: "user" },
+        { name: "Amit Verma", email: "amit@email.com", batch: "2023", status: "blocked", profession: "Web Developer", role: "user" },
+        { name: "Sneha Joshi", email: "sneha@email.com", batch: "2021", status: "active", profession: "Marketing Manager", role: "user" },
+        { name: "Rahul Kapoor", email: "rahul@email.com", batch: "2022", status: "active", profession: "Product Manager", role: "user" },
+        { name: "Kavita Patel", email: "kavita@email.com", batch: "2023", status: "blocked", profession: "UI/UX Designer", role: "user" },
+    ];
+
+    const userTableBody = document.getElementById('userTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const batchFilter = document.getElementById('batchFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const professionFilter = document.getElementById('professionFilter');
+
+    function openModal(id) {
+        document.getElementById(id).style.display = 'block';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function toggleStatus(button) {
+        const statusText = button.closest('tr').querySelector('.status-text');
+        if (button.classList.contains('active')) {
+            button.classList.remove('active');
+            button.classList.add('blocked');
+            button.innerText = 'Activate';
+            statusText.innerText = 'Blocked';
+            statusText.classList.remove('text-green-500');
+            statusText.classList.add('text-red-500');
+        } else {
+            button.classList.remove('blocked');
+            button.classList.add('active');
+            button.innerText = 'Block';
+            statusText.innerText = 'Active';
+            statusText.classList.remove('text-red-500');
+            statusText.classList.add('text-green-500');
+        }
+    }
+
+    function saveUser() {
+        alert("User saved successfully!");
+        closeModal('userModal');
+    }
+
+function renderTable(usersToRender) {
+    userTableBody.innerHTML = '';
+    usersToRender.forEach(loggedInUser => {
+        const row = userTableBody.insertRow();
+        const nameCell = row.insertCell();
+        const emailCell = row.insertCell();
+        const batchCell = row.insertCell();
+        const statusCell = row.insertCell();
+        const roleCell = row.insertCell();
+        const actionsCell = row.insertCell();
+
+        nameCell.classList.add('py-3', 'px-4', 'whitespace-nowrap');
+        emailCell.classList.add('py-3', 'px-4', 'whitespace-nowrap');
+        batchCell.classList.add('py-3', 'px-4', 'whitespace-nowrap');
+        statusCell.classList.add('py-3', 'px-4', 'whitespace-nowrap');
+        roleCell.classList.add('py-3', 'px-4', 'whitespace-nowrap');
+        actionsCell.classList.add('py-3', 'px-4', 'whitespace-nowrap', 'flex', 'gap-2', 'items-center', 'flex-wrap', 'md:flex-nowrap');
+
+        nameCell.innerHTML = `
+            <div class="flex items-center gap-3">
+                <img src="https://via.placeholder.com/40" class="rounded-full" alt="Avatar">
+                <span>${loggedInUser.name} ${loggedInUser.role === 'admin' ? '<span class="inline-block bg-blue-200 text-blue-700 rounded-full px-2 py-1 text-xs font-semibold ml-2">Admin</span>' : ''}</span>
+            </div>`;
+        emailCell.textContent = loggedInUser.email;
+        batchCell.textContent = loggedInUser.batch;
+        statusCell.innerHTML = `<span class="status-text font-bold text-${loggedInUser.status === 'active' ? 'green-500' : 'red-500'}">${loggedInUser.status.charAt(0).toUpperCase() + loggedInUser.status.slice(1)}</span>`;
+        roleCell.textContent = loggedInUser.role.charAt(0).toUpperCase() + loggedInUser.role.slice(1);
+        actionsCell.innerHTML = `
+            <button class="edit-button bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-md text-xs font-semibold transition duration-200">Edit</button>
+            <button class="delete-button bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-md text-xs font-semibold transition duration-200">Delete</button>
+            <button class="view-profile-button bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-md text-xs font-semibold transition duration-200">View</button>
+            <button class="status-button ${loggedInUser.status === 'active' ? 'active bg-green-500 hover:bg-green-600' : 'blocked bg-red-500 hover:bg-red-600'} text-white py-2 px-3 rounded-md text-xs font-semibold transition duration-200" onclick="toggleStatus(this)">${loggedInUser.status === 'active' ? 'Block' : 'Activate'}</button>
+        `;
+
+        const isAdminLoggedIn = users.find(user => user.role === 'admin' && user.name === 'Admin User'); // Assuming 'Admin User' is the logged-in admin
+
+        if (isAdminLoggedIn && loggedInUser.role === 'user') {
+            actionsCell.innerHTML += `
+                <button class="make-admin-button bg-yellow-500 hover:bg-yellow-600 text-black py-2 px-3 rounded-md text-xs font-semibold transition duration-200 ml-2" onclick="makeAdmin('${loggedInUser.email}')">Make Admin</button>
+            `;
+        } else if (isAdminLoggedIn && loggedInUser.role === 'admin' && loggedInUser.email !== 'admin@email.com') {
+            // Show "Remove Admin" button for other admins (excluding the logged-in admin)
+            actionsCell.innerHTML += `
+                <button class="remove-admin-button bg-orange-500 hover:bg-orange-600 text-white py-2 px-3 rounded-md text-xs font-semibold transition duration-200 ml-2" onclick="removeAdmin('${loggedInUser.email}')">Remove Admin</button>
+            `;
+        }
+    });
+}
+
+function makeAdmin(userEmail) {
+    const userToUpdate = users.find(user => user.email === userEmail);
+    if (userToUpdate) {
+        userToUpdate.role = 'admin';
+        renderTable(users); // Re-render the table to show the change
+    }
+}
+
+
+function removeAdmin(userEmail) {
+    const userToRemove = users.find(user => user.email === userEmail);
+    const adminCount = users.filter(user => user.role === 'admin').length;
+
+    if (userToRemove && userToRemove.role === 'admin') {
+        if (adminCount > 1) {
+            userToRemove.role = 'user';
+            renderTable(users);
+        } else {
+            alert("Cannot remove the last admin!");
+        }
+    }
+}
+
+    function filterUsers() {
+        const searchText = searchInput.value.toLowerCase();
+        const selectedBatch = batchFilter.value;
+        const selectedStatus = statusFilter.value;
+        const selectedProfession = professionFilter.value.toLowerCase();
+
+        const filteredUsers = users.filter(user => {
+            const nameMatch = user.name.toLowerCase().includes(searchText);
+            const emailMatch = user.email.toLowerCase().includes(searchText);
+            const batchMatch = selectedBatch === "" || user.batch === selectedBatch;
+            const statusMatch = selectedStatus === "" || user.status === selectedStatus;
+            const professionMatch = user.profession.toLowerCase().includes(selectedProfession);
+
+            return (nameMatch || emailMatch) && batchMatch && statusMatch && professionMatch;
+        });
+
+        renderTable(filteredUsers);
+    }
+
+
+    function resetFilters() {
+        searchInput.value = '';
+        batchFilter.value = '';
+        statusFilter.value = '';
+        professionFilter.value = '';
+        renderTable(users);
+    }
+
+    renderTable(users);
+
+    searchInput.addEventListener('keyup', filterUsers);
+    batchFilter.addEventListener('change', filterUsers);
+    statusFilter.addEventListener('change', filterUsers);
+    professionFilter.addEventListener('keyup', filterUsers);
+</script>
+</body>
+</html>

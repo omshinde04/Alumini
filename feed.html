@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed - AlumniConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Reusing hamburger menu styles */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger-line {
+            width: 28px;
+            height: 3px;
+            background-color: #374151;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+
+        .open .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-6px, 7px);
+        }
+
+        .open .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .open .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-6px, -7px);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: #f9fafb;
+            padding: 1rem 0;
+            z-index: 10;
+        }
+
+        .mobile-nav a {
+            display: block;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .mobile-nav a:hover {
+            background-color: #f3f4f6;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: none;
+            }
+
+            .mobile-nav.open {
+                display: block;
+            }
+        }
+
+        /* Feed Page Styles */
+        .create-post-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .create-post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .create-post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+        }
+
+        .create-post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .create-post-form {
+            flex-grow: 1;
+        }
+
+        .post-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 1rem;
+            color: #374151;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .post-input:focus {
+            border-bottom-color: #3b82f6;
+        }
+
+        .create-post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .post-button {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+        }
+
+        .post-button:hover {
+            background-color: #2563eb;
+        }
+
+        .post-button:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .attachment-button {
+            color: #718096;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .attachment-button i {
+            margin-right: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        #image-upload {
+            display: none;
+        }
+
+        .post-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-info {
+            flex-grow: 1;
+        }
+
+        .post-author {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .post-date {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        .post-content {
+            font-size: 0.95rem;
+            color: #374151;
+            line-height: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-image {
+            max-width: 100%;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .like-button, .comment-button {
+            color: #718096;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+        }
+
+        .like-button:hover, .comment-button:hover {
+            color: #3b82f6;
+            background-color: #f0f4f8;
+        }
+
+        .like-button i, .comment-button i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .like-count, .comment-count {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        .comments-section {
+            margin-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 1rem;
+        }
+
+        .comment-input-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comment-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 0.95rem;
+            color: #374151;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comment-input:focus {
+            border-bottom-color: #3b82f6;
+        }
+
+        .comment-post-button {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            margin-top: 0.5rem;
+            align-self: flex-end;
+        }
+
+        .comment-post-button:hover {
+            background-color: #2563eb;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .comment-info {
+            flex-grow: 1;
+        }
+
+        .comment-author {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .comment-date {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .comment-content {
+            font-size: 0.9rem;
+            color: #374151;
+            line-height: 1.4rem;
+            margin-top: 0.25rem;
+        }
+        .post-image-preview{
+            max-height: 200px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-white text-gray-800 py-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+            <a href="/" class="text-xl font-bold text-blue-600">AlumniConnect</a>
+            <div class="hidden md:flex space-x-4 items-center">
+                <a href="/profile.html" class="font-semibold text-gray-700 hover:text-blue-500 transition duration-300">Profile</a>
+                <a href="/connections.html" class="font-semibold text-gray-700 hover:text-blue-500 transition duration-300">Connections</a>
+                <a href="/feed.html" class="font-semibold text-blue-500 hover:text-blue-700 transition duration-300">Feed</a>
+                <a href="/groups.html" class="text-gray-700 hover:text-blue-500 transition duration-duration-300">Groups</a>
+                <a href="/login.html" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300">Logout</a>
+            </div>
+            <button id="hamburger" class="hamburger focus:outline-none md:hidden">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+        </div>
+        <div id="mobile-nav" class="mobile-nav">
+            <a href="/index.html"><i class="fas fa-home mr-2"></i>Home</a>
+            <a href="/profile.html"><i class="fas fa-user mr-2"></i>Profile</a>
+            <a href="/connections.html"><i class="fas fa-link mr-2"></i>Connections</a>
+            <a href="/feed.html"><i class="fas fa-newspaper mr-2"></i>Feed</a>
+            <a href="/groups.html"><i class="fas fa-users mr-2"></i>Groups</a>
+            <a href="/login.html"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-semibold mb-6 text-blue-700">Feed</h2>
+
+        <div class="create-post-card">
+            <div class="create-post-header">
+                <div class="create-post-avatar">
+                    <img src="https://via.placeholder.com/48" alt="Your Avatar">
+                </div>
+                <form class="create-post-form" id="create-post-form">
+                    <textarea placeholder="What's on your mind, [Your Name]?" class="post-input" id="post-input"></textarea>
+                </form>
+            </div>
+            <div class="create-post-actions">
+                <label for="image-upload" class="attachment-button">
+                    <i class="fas fa-paperclip"></i>
+                    <span>Attach</span>
+                </label>
+                <input type="file" id="image-upload" accept="image/*">
+                <button class="post-button" type="submit" id="post-button" disabled>Post</button>
+            </div>
+            <div id="image-preview-container" style="display:none;">
+                <img id="image-preview" class="post-image-preview" src="">
+            </div>
+        </div>
+
+        <div id="posts-container">
+        </div>
+    </main>
+<script>
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobile-nav');
+
+hamburger.addEventListener('click', () => {
+    mobileNav.classList.toggle('open');
+    hamburger.classList.toggle('open');
+});
+
+document.addEventListener('click', (event) => {
+    const isClickInside = mobileNav.contains(event.target) || hamburger.contains(event.target);
+
+    if (!isClickInside && mobileNav.classList.contains('open')) {
+        mobileNav.classList.remove('open');
+        hamburger.classList.remove('open');
+    }
+});
+
+const postInput = document.getElementById('post-input');
+const postButton = document.getElementById('post-button');
+const postsContainer = document.getElementById('posts-container');
+const createPostForm = document.getElementById('create-post-form');
+const imageUpload = document.getElementById('image-upload');
+const imagePreview = document.getElementById('image-preview');
+const imagePreviewContainer = document.getElementById('image-preview-container');
+
+function updatePostButtonState() {
+    postButton.disabled = !postInput.value.trim() && !imageUpload.files[0];
+}
+
+postInput.addEventListener('input', updatePostButtonState);
+
+imageUpload.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        imagePreview.src = '';
+        imagePreviewContainer.style.display = 'none';
+    }
+    updatePostButtonState();
+});
+
+createPostForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const postContent = postInput.value.trim();
+    const imageFile = imageUpload.files[0];
+
+    if (!postContent && !imageFile) return; // Don't submit if both are empty
+
+    const formData = new FormData(); // Use FormData to send files
+    formData.append('content', postContent);
+    if (imageFile) {
+        formData.append('image', imageFile); // 'image' is the field name on the server
+    }
+
+    fetch('/api/posts', { // Your API endpoint
+        method: 'POST',
+        body: formData, // Send the FormData object
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { // Get detailed error message
+                    throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(newPost => {
+            console.log('Post created successfully:', newPost); // **DEBUG: Check the newPost object**
+            renderPost(newPost); // Function to display the new post
+            resetForm();
+            alert('Post created successfully!'); //added alert
+        })
+        .catch(error => {
+            console.error('Error creating post:', error);
+            alert('Failed to create post. Please try again. See console for details.');
+        });
+});
+
+function resetForm() {
+    postInput.value = '';
+    postButton.disabled = true;
+    imageUpload.value = '';
+    imagePreviewContainer.style.display = 'none';
+    imagePreview.src = ''; // Clear the preview
+}
+
+function renderPost(post) {
+    // **DEBUG:  Check the 'post' object here**
+    console.log("Rendering post:", post);
+
+    const postCard = document.createElement('div');
+    postCard.className = 'post-card';
+
+    const postHeader = document.createElement('div');
+    postHeader.className = 'post-header';
+
+    const postAvatar = document.createElement('div');
+    postAvatar.className = 'post-avatar';
+    const avatarImg = document.createElement('img');
+    avatarImg.src = post.authorAvatar || 'https://via.placeholder.com/48'; // Use placeholder if no avatar
+    avatarImg.alt = post.firstName + " " + post.lastName;
+    postAvatar.appendChild(avatarImg);
+
+    const postInfo = document.createElement('div');
+    postInfo.className = 'post-info';
+    const postAuthor = document.createElement('p');
+    postAuthor.className = 'post-author';
+    postAuthor.textContent =  post.firstName + " " + post.lastName;; //display author name
+    const postDate = document.createElement('p');
+    postDate.className = 'post-date';
+    postDate.textContent = new Date(post.created_at).toLocaleString(); // Format date
+    postInfo.appendChild(postAuthor);
+    postInfo.appendChild(postDate);
+
+    postHeader.appendChild(postAvatar);
+    postHeader.appendChild(postInfo);
+
+    const postContent = document.createElement('p');
+    postContent.className = 'post-content';
+    postContent.textContent = post.content;
+
+    const postActions = document.createElement('div');
+    postActions.className = 'post-actions';
+
+    const likeButton = document.createElement('div');
+    likeButton.className = 'like-button';
+    likeButton.innerHTML = `<i class="far fa-thumbs-up"></i> <span>Like</span>`;
+    const likeCount = document.createElement('span');
+    likeCount.className = 'like-count';
+    likeCount.textContent = post.likes || 0; //handle null likes
+
+    likeButton.addEventListener('click', () => {
+        //  Send request to server to update likes,  You'll need to send this to the server to update the database
+        likeCount.textContent = parseInt(likeCount.textContent) + 1;
+    });
+
+    const commentButton = document.createElement('div');
+    commentButton.className = 'comment-button';
+    commentButton.innerHTML = `<i class="far fa-comment"></i> <span>Comment</span>`;
+    const commentCount = document.createElement('span');
+    commentCount.className = 'comment-count';
+    commentCount.textContent = post.comments ? post.comments.length : 0;
+
+    const commentsSection = document.createElement('div');
+    commentsSection.className = 'comments-section';
+
+    const commentInputContainer = document.createElement('div');
+    commentInputContainer.className = 'comment-input-container';
+    const commentAvatar = document.createElement('div');
+    commentAvatar.className = 'comment-avatar';
+    const commentInputImg = document.createElement('img');
+    commentInputImg.src = 'https://via.placeholder.com/40'; //  Replace with user avatar
+    commentInputImg.alt = 'Your Avatar';
+    commentAvatar.appendChild(commentInputImg);
+    const commentInput = document.createElement('textarea');
+    commentInput.className = 'comment-input';
+    commentInput.placeholder = 'Write a comment...';
+    const commentPostButton = document.createElement('button');
+    commentPostButton.className = 'comment-post-button';
+    commentPostButton.textContent = 'Post';
+    commentInputContainer.appendChild(commentAvatar);
+    commentInputContainer.appendChild(commentInput);
+    commentInputContainer.appendChild(commentPostButton);
+
+    commentsSection.appendChild(commentInputContainer);
+
+    commentPostButton.addEventListener('click', () => {
+        const commentText = commentInput.value.trim();
+        if (!commentText) return;
+
+        const newComment = {
+            author: 'Current User', // Replace
+            authorAvatar: 'https://via.placeholder.com/40',
+            date: 'Just now',
+            content: commentText,
+        };
+
+        //  Send comment to server,  You'll need to send this to the server
+        commentCount.textContent = parseInt(commentCount.textContent) + 1;
+        renderComment(commentsSection, newComment);
+        commentInput.value = '';
+    });
+
+    postActions.appendChild(likeButton);
+    postActions.appendChild(likeCount);
+    postActions.appendChild(commentButton);
+    postActions.appendChild(commentCount);
+
+    postCard.appendChild(postHeader);
+    postCard.appendChild(postContent);
+    if (post.image_url) { //if there is an image
+        const postImage = document.createElement('img');
+        postImage.className = 'post-image';
+        postImage.src = post.image_url; // Use the URL from the server
+        postImage.alt = 'Post Image';
+        postCard.appendChild(postImage);
+    }
+
+    postsContainer.insertBefore(postCard, postsContainer.firstChild); //adds to the top
+     // Force reflow (important for some browsers)
+    postCard.offsetHeight;
+}
+
+function renderComment(container, comment) {
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'comment';
+
+    const commentAvatar = document.createElement('div');
+    commentAvatar.className = 'comment-avatar';
+    const avatarImg = document.createElement('img');
+    avatarImg.src = comment.authorAvatar;
+    avatarImg.alt = comment.author;
+    commentAvatar.appendChild(avatarImg);
+
+    const commentInfo = document.createElement('div');
+    commentInfo.className = 'comment-info';
+    const commentAuthor = document.createElement('p');
+    commentAuthor.className = 'comment-author';
+    commentAuthor.textContent = comment.author;
+    const commentDate = document.createElement('p');
+    commentDate.className = 'comment-date';
+    commentDate.textContent = comment.date;
+    const commentContent = document.createElement('p');
+    commentContent.className = 'comment-content';
+    commentContent.textContent = comment.content;
+    commentInfo.appendChild(commentAuthor);
+    commentInfo.appendChild(commentDate);
+    commentInfo.appendChild(commentContent);
+
+    commentDiv.appendChild(commentAvatar);
+    commentDiv.appendChild(commentInfo);
+    container.appendChild(commentDiv);
+}
+
+// --- Fetch initial posts ---
+const API_BASE_URL = '/api'; // Define
+fetch(`${API_BASE_URL}/posts`)  // Corrected:  Use absolute path and template literals
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`Failed to fetch posts: ${response.status} - ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        data.forEach(post => {
+            renderPost(post);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+        postsContainer.innerHTML = `<p class="text-red-500">Failed to load posts. Please try again later.</p>`;
+    });
+</script>
+
+
+
+</body>
+</html>
